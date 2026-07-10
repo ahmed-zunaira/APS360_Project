@@ -1,98 +1,64 @@
 import os
-import requests
+import earthaccess
 import xarray as xr
-from bs4 import BeautifulSoup
-import datetime
+from pathlib import Path 
 
 SAVE_DIR = "../data/raw"
 START_YEAR = 2016
 END_YEAR = 2026
 
-# creating the save directory 
+# make raw data directory if it doesn't exist already
 os.makedirs(SAVE_DIR, exist_ok=True)
 
-def get_8days(year):
-    """
-    Returns a list of strings of calendar days 8 days apart, to match MODIS' formatting
-    """
-    days = []
-    start_date = datetime.datetime(year, 1, 1)
+def download_data():
+    # get environment variables
+    user = os.getenv('EARTHDATA_USER')
+    password = os.getenv('EARTHDATA_PASS')
 
-    for i in range(46):
-        curr = start_date + datetime.timedelta(days=i*8)
+    # if environment variables exist, use them for username and password for authentication
+    if user and password:
+        os.environ ['EARTHDATA_USERNAME'] = user
+        os.environ ['EARTHDATA_PASSWORD'] = password
+        auth = earthaccess.login(strategy="environment", persist=True)
+    else: # otherwise, use .netrc method
+        auth = earthaccess.login(persist=True)
 
-        if (curr.year != year):
-            break
+    for year in range(START_YEAR, END_YEAR+1):
+        file_results = []
 
-        days.append(curr.strftime("%m%d"))
-    
-    return days
+        results = earthaccess.search_data(
+            short_name = "MODISA_L3m_CHL",
+            temporal = (f"{year}-01-01", f"{year}-12-31"),
+            granule_name="*8D*4km.nc"
+        )
 
-def get_filename (year, day):
-    """
-    Returns the string MODIS file name for a datset of the provided day of the given year
-    """
-    url = f"https://oceandata.sci.gsfc.nasa.gov/opendap/MODISA/L3SMI/{year}/{day}/"
+        if (not results):
+            print (f"No data found for year {year}.")
+            continue
 
-    response = requests.get(url)
+        for result in results:
+            if ("8D" in result.__str__()):
+                file_results.append(result)
 
-    if response.status_code != 200:
-        return ""
+        print (f"Found {len(file_results)} granules. Starting download...")
+        filelist = earthaccess.download(file_results, SAVE_DIR)
 
-    soup = BeautifulSoup(response.content, 'html.parser')
+        for file in filelist:
+            try:
+                dataset = xr.open_dataset(file, engine="netcdf4")
 
-    check_8d = ".8D."
-    check_chlor = "chlor_a.4km.nc"
-    check_link = ""
+                dataset = dataset.sel(lat=slice(56.8333, 46.1666), lon=slice(-133.8333, -123.1666))
 
-    links = soup.find_all("a")
-    for link in links:
-        curr = link.get('href')
-        if curr and check_8d in curr and curr.endswith(check_chlor):
-            if "viewers" not in curr:
-                check_link = curr
-                break
-    if (check_link == ""):
-        return ""
-    
-    return check_link
+                save_path = file.with_name(file.name.replace('.nc', '_cropped.nc'))
+                dataset.to_netcdf(save_path)
+                print(f"Processed: {os.path.basename(save_path)}")
 
-def download_slice(year, day, filename):
-    opendap_url = f"https://oceandata.sci.gsfc.nasa.gov/opendap/MODISA/L3SMI/{year}/{day}/{filename}"
-    local_save_path = os.path.join (SAVE_DIR, filename)
+                file = Path(file)
+                file.unlink()
+                print (f"Deleted: {file.name}")
 
-    print ("Processing: {}...".format(filename))
+            except Exception as e:
+                print(f"Failed to process {file}: {e}")
 
-    try:
-        # get dataset
-        dataset = xr.open_dataset(opendap_url, engine="netcdf4")
-
-        # crop dataset to bc coast
-        dataset = dataset.sel(lat=slice(55, 48), lon=slice(-135, -122))
-
-        # save dataset to data folder
-        dataset.to_netcdf(local_save_path)
-
-        # close the dataset
-        dataset.close()
-
-        pass
-
-    except Exception as e:
-        print (f"Failed to process {filename}: {e}")
-
-# main
 if __name__ == "__main__":
-
-    for year in range(START_YEAR, END_YEAR + 1):
-        days = get_8days(year)
-
-        for day in days:
-            # locating the file for the day in specified year
-            filename = get_filename(year, day)
-            
-            # if found, download the file and crop the dataset
-            if filename:
-                download_slice(year, day, filename)
-            else:
-                print (f"Could not find a matching file for {year} day {day}.")
+    download_data()
