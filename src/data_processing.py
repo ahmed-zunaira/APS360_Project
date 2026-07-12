@@ -24,16 +24,6 @@ def process_file(file_path):
     data_tensor = torch.from_numpy(data_np).float()
     data_tensor = data_tensor.unsqueeze(0)
 
-    #data_tensor = data_tensor.unsqueeze(0)
-    #data_tensor = F.interpolate(
-    #    data_tensor,
-    #    size=(128, 128),
-    #    mode='bilinear',
-    #    align_corners=False
-    #)
-
-    #data_tensor = data_tensor.squeeze(0)
-
     save_path = PROCESSED_DIR / file_path.name.replace('_cropped.nc', '.pt').replace('.nc', '.pt')
     torch.save(data_tensor, save_path)
     pass
