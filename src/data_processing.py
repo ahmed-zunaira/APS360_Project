@@ -18,6 +18,14 @@ def process_file(file_path):
 
     data_np = np.nan_to_num(data_np)
 
+    mask_path = PROCESSED_DIR / 'land_mask.pt'
+
+    if not mask_path.exists():
+        # generating a biinary mask to mask out the coastline
+        mask = (data_np > 0).astype(np.float32)
+        mask_tensor = torch.from_numpy(mask).unsqueeze(0)
+        torch.save (mask_tensor, mask_path)
+
     data_np = data_np + 1e-5
     data_np = np.log1p(data_np)
 

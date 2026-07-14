@@ -4,8 +4,8 @@ import xarray as xr
 from pathlib import Path 
 
 SAVE_DIR = "../data/raw"
-START_YEAR = 2016
-END_YEAR = 2026
+START_YEAR = 2014
+END_YEAR = 2015
 
 # make raw data directory if it doesn't exist already
 os.makedirs(SAVE_DIR, exist_ok=True)

@@ -93,6 +93,6 @@ if __name__ == "__main__":
 
     model = Autoencoder()
 
-    train(model, train_data, val_data, 16, 0.001, 20)
+    train(model, train_data, val_data, 16, 0.001, 100)
 
-    plot(16, 0.001, 20)
+    plot(16, 0.001, 100)
