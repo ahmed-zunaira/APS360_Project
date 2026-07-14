@@ -11,7 +11,7 @@ def setup_inference (model_path, dataloader):
     model = Autoencoder()
 
     # load model weights
-    model.load_state_dict(torch.load(model_path), weights_only=True)
+    model.load_state_dict(torch.load(model_path, weights_only=True))
 
     model.eval() # set model to eval mode
 
