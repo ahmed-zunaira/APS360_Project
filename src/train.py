@@ -4,6 +4,7 @@ import torch
 import torch.nn as nn
 from torch.utils.data import DataLoader, random_split
 import matplotlib.pyplot as plt
+import os
 
 from data_loader import Dataload
 from autoencoder import Autoencoder
@@ -82,7 +83,10 @@ def train (model, train_data, val_data, batch_size=32, learning_rate=0.001, epoc
     np.savetxt("CAE_bs{}_lr{}_epoch{}_val_loss.csv".format(batch_size,learning_rate,epochs), val_loss)
 
 if __name__ == "__main__":
-    processed_dir = "../data/processed"
+    processed_dir = "/content/drive/MyDrive/Phytoplankton_Project/data/processed"
+    if not os.path.exists(processed_dir):
+        print ("Directory not found")
+               
     dataset = Dataload(processed_dir)
 
     train_data, val_data = random_split(dataset, [0.8, 0.2])

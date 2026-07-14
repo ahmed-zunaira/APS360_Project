@@ -30,7 +30,7 @@ def get_dataloader(processed_data_dir, batch_size=16, shuffle=True):
     return torch.utils.data.DataLoader (dataset, batch_size=batch_size, shuffle=shuffle) 
 
 if __name__ == "__main__":
-    processed_dir = "../data/processed"
+    processed_dir = "/content/drive/MyDrive/Phytoplankton_Project/data/processed"
 
     if os.path.exists(processed_dir):
         dataloader = get_dataloader(processed_dir)
