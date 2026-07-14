@@ -62,7 +62,7 @@ def plot_triplets(images, reconstructions, difference_maps, num_to_plot=3):
 
 if __name__ == "__main__":
     processed_dir = "/content/drive/MyDrive/Phytoplankton_Project/data/processed"
-    model_weights_file = "/content/CAE_model.pth"
+    model_weights_file = "/content/APS360_Project/CAE_model.pth"
 
     if not os.path.exists(processed_dir):
         print ("Directory not found")
