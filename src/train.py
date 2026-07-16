@@ -4,6 +4,7 @@ import torch
 import torch.nn as nn
 from torch.utils.data import DataLoader, random_split
 import matplotlib.pyplot as plt
+import random
 import os
 
 from data_loader import Dataload
@@ -62,6 +63,14 @@ def train (model, train_data, val_data, batch_size=32, learning_rate=0.001, epoc
         for data in train_loader:
 
             img, _ = data
+            
+            # add 50% chance of image flipping horizontally
+            if random.random() > 0.5:
+                img = torch.flip(img, dims=[3])
+            
+            # add 50% chance of image flipping vertically
+            if random.random() > 0.5:
+                img = torch.flip(img, dims=[2])
             
             output = model(img)
             loss = criterion (output, img)

@@ -4,8 +4,8 @@ import xarray as xr
 from pathlib import Path 
 
 SAVE_DIR = "../data/raw"
-START_YEAR = 2014
-END_YEAR = 2015
+START_YEAR = 2008
+END_YEAR = 2008
 
 # make raw data directory if it doesn't exist already
 os.makedirs(SAVE_DIR, exist_ok=True)
@@ -47,7 +47,7 @@ def download_data():
             try:
                 dataset = xr.open_dataset(file, engine="netcdf4")
 
-                dataset = dataset.sel(lat=slice(56.8333, 46.1666), lon=slice(-133.8333, -123.1666))
+                dataset = dataset.sel(lat=slice(56.8333, 46.1666), lon=slice(-145.8333, -135.1666))
 
                 save_path = file.with_name(file.name.replace('.nc', '_cropped.nc'))
                 dataset.to_netcdf(save_path)
