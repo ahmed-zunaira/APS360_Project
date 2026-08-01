@@ -4,8 +4,8 @@ import xarray as xr
 from pathlib import Path 
 
 SAVE_DIR = "../data/raw"
-START_YEAR = 2008
-END_YEAR = 2008
+START_YEAR = 2015
+END_YEAR = 2015
 
 # make raw data directory if it doesn't exist already
 os.makedirs(SAVE_DIR, exist_ok=True)
@@ -24,6 +24,7 @@ def download_data():
         auth = earthaccess.login(persist=True)
 
     for year in range(START_YEAR, END_YEAR+1):
+
         file_results = []
 
         results = earthaccess.search_data(
