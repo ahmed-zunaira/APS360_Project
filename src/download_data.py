@@ -4,8 +4,9 @@ import xarray as xr
 from pathlib import Path 
 
 SAVE_DIR = "../data/raw"
-START_YEAR = 2017
-END_YEAR = 2026
+START_YEAR = 2014
+END_YEAR = 2015
+SHORT_NAME = "VIIRSN_L3m_CHL"
 
 # make raw data directory if it doesn't exist already
 os.makedirs(SAVE_DIR, exist_ok=True)
@@ -28,7 +29,7 @@ def download_data():
         file_results = []
 
         results = earthaccess.search_data(
-            short_name = "VIIRSJ1_L3m_CHL",
+            short_name = SHORT_NAME,
             temporal = (f"{year}-01-01", f"{year}-12-31"),
             granule_name="*8D*4km.nc"
         )
