@@ -16,7 +16,7 @@ class Autoencoder_4L (nn.Module):
                 return nn.Identity()
 
         second_channels = base_channels * 2
-        third_channels = base_channels * 3
+        third_channels = base_channels * 4
         latent_dim = base_channels * 2
 
         self.encoder = nn.Sequential(
