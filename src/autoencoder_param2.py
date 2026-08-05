@@ -10,6 +10,8 @@ class Autoencoder_4L (nn.Module):
         def normalize(channels):
             if norm_type == 'batch':
                 return nn.BatchNorm2d(channels)
+            elif norm_type == 'instance':  
+                return nn.InstanceNorm2d(channels)
             elif norm_type == 'layer':
                 return nn.GroupNorm(1, channels)
             else:
@@ -22,32 +24,32 @@ class Autoencoder_4L (nn.Module):
         self.encoder = nn.Sequential(
             nn.Conv2d(1, base_channels, 3, stride=2, padding=1),
             normalize(base_channels),
-            nn.ReLU(),
+            nn.LeakyReLU(0.2),
             nn.Dropout2d(dropout_rate),
             nn.Conv2d(base_channels, second_channels, 3, stride=2, padding=1),
             normalize(second_channels),
-            nn.ReLU(),
+            nn.LeakyReLU(0.2),
             nn.Dropout2d(dropout_rate),
             nn.Conv2d(second_channels, third_channels, 3, stride=2, padding=1),
             normalize(third_channels),
-            nn.ReLU(),
+            nn.LeakyReLU(0.2),
             nn.Dropout2d(dropout_rate),
             nn.Conv2d(third_channels, latent_dim, 3, stride=2, padding=1),
             normalize(latent_dim),
-            nn.ReLU()
+            nn.LeakyReLU(0.2),
         )
         self.decoder = nn.Sequential(
             nn.ConvTranspose2d(latent_dim, third_channels, 3, stride=2, padding=1, output_padding=1),
             normalize(third_channels),
-            nn.ReLU(),
+            nn.LeakyReLU(0.2),
             nn.Dropout2d(dropout_rate),
             nn.ConvTranspose2d(third_channels, second_channels, 3, stride=2, padding=1, output_padding=1),
             normalize(second_channels),
-            nn.ReLU(),
+            nn.LeakyReLU(0.2),
             nn.Dropout2d(dropout_rate),
             nn.ConvTranspose2d(second_channels, base_channels, 3, stride=2, padding=1, output_padding=1),
             normalize(base_channels),
-            nn.ReLU(),
+            nn.LeakyReLU(0.2),
             nn.Dropout2d(dropout_rate),
             nn.ConvTranspose2d(base_channels, 1, 3, stride=2, padding=1, output_padding=1),
         )
