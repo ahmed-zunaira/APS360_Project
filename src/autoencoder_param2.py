@@ -46,7 +46,6 @@ class Autoencoder_4L (nn.Module):
             nn.ReLU(),
             nn.Dropout2d(dropout_rate),
             nn.ConvTranspose2d(base_channels, 1, 3, stride=2, padding=1, output_padding=1),
-            nn.ReLU()
         )
     def forward (self, x):
         x = self.encoder(x)
@@ -88,7 +87,6 @@ class Autoencoder_3L (nn.Module):
             nn.ReLU(),
             nn.Dropout2d(dropout_rate),
             nn.ConvTranspose2d(base_channels, 1, 3, stride=2, padding=1, output_padding=1),
-            nn.ReLU()
         )
     def forward (self, x):
         x = self.encoder(x)
@@ -122,7 +120,6 @@ class Autoencoder_2L (nn.Module):
             nn.ReLU(),
             nn.Dropout2d(dropout_rate),
             nn.ConvTranspose2d(base_channels, 1, 3, stride=2, padding=1, output_padding=1),
-            nn.ReLU()
         )
     def forward (self, x):
         x = self.encoder(x)

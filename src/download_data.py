@@ -4,9 +4,9 @@ import xarray as xr
 from pathlib import Path 
 
 SAVE_DIR = "../data/raw"
-START_YEAR = 2014
+START_YEAR = 2015
 END_YEAR = 2015
-SHORT_NAME = "VIIRSN_L3m_CHL"
+SHORT_NAME = "MODISA_L3m_CHL"
 
 # make raw data directory if it doesn't exist already
 os.makedirs(SAVE_DIR, exist_ok=True)
