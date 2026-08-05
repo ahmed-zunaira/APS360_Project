@@ -4,7 +4,7 @@ import torch.nn.functional as F
 
 # defines a 4 layer autoencoder
 class Autoencoder_4L (nn.Module):
-    def __init__(self, base_channels=32, second_channels=64, third_channels=128, latent_dim=64, dropout_rate=0.2, norm_type='batch'):
+    def __init__(self, base_channels=32, dropout_rate=0.2, norm_type='batch'):
         super (Autoencoder_4L, self).__init__()
 
         def normalize(channels):
@@ -14,6 +14,10 @@ class Autoencoder_4L (nn.Module):
                 return nn.GroupNorm(1, channels)
             else:
                 return nn.Identity()
+
+        second_channels = base_channels * 2
+        third_channels = base_channels * 3
+        latent_dim = base_channels * 2
 
         self.encoder = nn.Sequential(
             nn.Conv2d(1, base_channels, 3, stride=2, padding=1),
