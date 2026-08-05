@@ -42,15 +42,12 @@ class Autoencoder_4L (nn.Module):
             nn.ConvTranspose2d(latent_dim, third_channels, 3, stride=2, padding=1, output_padding=1),
             normalize(third_channels),
             nn.LeakyReLU(0.2),
-            nn.Dropout2d(dropout_rate),
             nn.ConvTranspose2d(third_channels, second_channels, 3, stride=2, padding=1, output_padding=1),
             normalize(second_channels),
             nn.LeakyReLU(0.2),
-            nn.Dropout2d(dropout_rate),
             nn.ConvTranspose2d(second_channels, base_channels, 3, stride=2, padding=1, output_padding=1),
             normalize(base_channels),
             nn.LeakyReLU(0.2),
-            nn.Dropout2d(dropout_rate),
             nn.ConvTranspose2d(base_channels, 1, 3, stride=2, padding=1, output_padding=1),
         )
     def forward (self, x):
