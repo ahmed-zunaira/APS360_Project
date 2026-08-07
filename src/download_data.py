@@ -1,12 +1,13 @@
 import os
 import earthaccess
 import xarray as xr
+import numpy as np
 from pathlib import Path 
 
 SAVE_DIR = "../data/raw"
-START_YEAR = 2015
-END_YEAR = 2015
-SHORT_NAME = "MODISA_L3m_CHL"
+START_YEAR = 2008
+END_YEAR = 2008
+SHORT_NAME = "MODIST_L3m_CHL"
 
 # make raw data directory if it doesn't exist already
 os.makedirs(SAVE_DIR, exist_ok=True)
@@ -49,7 +50,16 @@ def download_data():
             try:
                 dataset = xr.open_dataset(file, engine="netcdf4")
 
-                dataset = dataset.sel(lat=slice(56.8333, 46.1666), lon=slice(-145.8333, -135.1666))
+                # bc coast
+                #dataset = dataset.sel(lat=slice(56.8333, 46.1666), lon=slice(-145.8333, -135.1666))
+
+                # oregon coast
+                dataset = dataset.sel(lat=slice(48.5, 37.8333), lon=slice(-136.5, -125.8333))
+
+                target_lats = np.linspace(48.5, 37.8333, 256)
+                target_lons = np.linspace(-136.5, -125.8333, 256)
+
+                dataset = dataset.interp(lat=target_lats, lon=target_lons, method="linear")
 
                 save_path = file.with_name(file.name.replace('.nc', '_cropped.nc'))
                 dataset.to_netcdf(save_path)
